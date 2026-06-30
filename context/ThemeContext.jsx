@@ -43,7 +43,7 @@ export function ThemeProvider({ children }) {
             background: isDarkMode ? '#121212' : '#FFFFFF',
             text: isDarkMode ? '#F8FAFC' : '#0F172A',
             card: isDarkMode ? '#1E293B' : '#F1F5F9',
-            primary: '#007aff',
+            primary: isDarkMode ? '#28517e' : '#82a4c5'
         }
     };
 

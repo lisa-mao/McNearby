@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react'
 import {
     StyleSheet,
     Text,
@@ -8,45 +8,45 @@ import {
     TouchableOpacity,
     Linking,
     ActivityIndicator
-} from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from 'react-native'
+import { ThemeContext } from '../context/ThemeContext'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-const jsonURL = "https://gist.githubusercontent.com/lisa-mao/f194bcefafda7e15f7498694c211d78b/raw/7e7482b3eb00ad86371f129930553a90e7b32c4c/mcdonalspots.json";
+const jsonURL = "https://gist.githubusercontent.com/lisa-mao/f194bcefafda7e15f7498694c211d78b/raw/7e7482b3eb00ad86371f129930553a90e7b32c4c/mcdonalspots.json"
 
 export default function ListScreen({ navigation }) {
-    const { colors, isDarkMode, toggleTheme } = useContext(ThemeContext);
+    const { colors, isDarkMode, toggleTheme } = useContext(ThemeContext)
 
-    const [locations, setLocations] = useState([]);
-    const [loadingData, setLoadingData] = useState(true);
-    const [error, setError] = useState(null);
+    const [locations, setLocations] = useState([])
+    const [loadingData, setLoadingData] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchLocations = async () => {
             try {
-                const response = await fetch(jsonURL);
+                const response = await fetch(jsonURL)
                 if (!response.ok) {
-                    throw new Error('Netwerkrespons was niet in orde');
+                    throw new Error('Netwerkrespons was niet in orde')
                 }
-                const data = await response.json();
-                setLocations(data);
+                const data = await response.json()
+                setLocations(data)
             } catch (err) {
-                console.error("Fout bij ophalen:", err);
-                setError("Kon locaties niet laden.");
+                console.error("Fout bij ophalen:", err)
+                setError("Kon locaties niet laden.")
             } finally {
-                setLoadingData(false);
+                setLoadingData(false)
             }
         };
 
-        fetchLocations();
-    }, []);
+        fetchLocations()
+    }, [])
 
     const renderItem = ({ item }) => (
         <View style={[styles.card, { backgroundColor: colors.card }]}>
             <Text style={[styles.title, { color: colors.text }]}>{item.naam || item.name}</Text>
-            <Text style={[styles.address, { color: colors.text }]}>📍 {item.adres || item.address}</Text>
+            <Text style={[styles.address, { color: colors.text }]}> {item.adres || item.address}</Text>
             {item.beoordeling || item.rating ? (
-                <Text style={[styles.rating, { color: colors.text }]}>⭐ Beoordeling: {item.beoordeling || item.rating}</Text>
+                <Text style={[styles.rating, { color: colors.text }]}>Beoordeling: {item.beoordeling || item.rating}</Text>
             ) : null}
 
             <View style={styles.buttonContainer}>
@@ -60,27 +60,24 @@ export default function ListScreen({ navigation }) {
                 )}
 
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#10B981', flex: item.website ? 0.48 : 1 }]}
+                    style={[styles.button, { backgroundColor: colors.primary , flex: item.website ? 0.48 : 1 }]}
                     onPress={() => navigation.navigate('Kaart', { location: item })}
                 >
-                    <Text style={styles.buttonText}>Kaart</Text>
+                    <Text style={styles.buttonText}>Navigeer op kaart</Text>
                 </TouchableOpacity>
             </View>
         </View>
-    );
+    )
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-            <View style={[styles.header, { borderBottomColor: colors.card }]}>
-                <Text style={[styles.headerText, { color: colors.text }]}>
-                    {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-                </Text>
-                <Switch
-                    trackColor={{ false: '#767577', true: '#34D399' }}
-                    thumbColor={isDarkMode ? '#F59E0B' : '#f4f3f4'}
-                    onValueChange={toggleTheme}
-                    value={isDarkMode}
-                />
+            <View style={styles.header}>
+                <TouchableOpacity
+                    style={[styles.button, { backgroundColor: colors.primary } ]}
+                    onPress={() => navigation.navigate('Instellingen')}
+                >
+                    <Text style={[styles.buttonText, {padding: 5} ]}>Instellingen</Text>
+                </TouchableOpacity>
             </View>
 
             {loadingData ? (
@@ -100,7 +97,7 @@ export default function ListScreen({ navigation }) {
                 />
             )}
         </SafeAreaView>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -159,11 +156,12 @@ const styles = StyleSheet.create({
     button: {
         paddingVertical: 10,
         borderRadius: 8,
-        alignItems: 'center',
+        alignItems: 'center'
+
     },
     buttonText: {
         color: '#FFFFFF',
         fontWeight: 'bold',
         fontSize: 14,
     },
-});
+})

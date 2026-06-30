@@ -1,48 +1,66 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import MapView, { Callout, Marker } from 'react-native-maps';
-import { StyleSheet, View, Text } from 'react-native';
-import * as Location from 'expo-location';
-import { ThemeContext } from '../context/ThemeContext';
+import React, { useEffect, useRef, useState, useContext } from 'react'
+import MapView, { Callout, Marker } from 'react-native-maps'
+import { StyleSheet, View, Text } from 'react-native'
+import * as Location from 'expo-location'
+import { ThemeContext } from '../context/ThemeContext'
 
-export default function Homescreen() {
-    const { colors, isDarkMode } = useContext(ThemeContext);
+export default function Homescreen({ route }) {
+    const { colors, isDarkMode } = useContext(ThemeContext)
 
-    const [hotspots, setHotspots] = useState([]);
-    const [location, setLocation] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
-    const mapRef = useRef(null);
+    const [hotspots, setHotspots] = useState([])
+    const [location, setLocation] = useState(null)
+    const [errorMsg, setErrorMsg] = useState(null)
 
-    const jsonUrl = "https://gist.githubusercontent.com/lisa-mao/f194bcefafda7e15f7498694c211d78b/raw/7e7482b3eb00ad86371f129930553a90e7b32c4c/mcdonalspots.json";
+    const [trackUser, setTrackUser] = useState(true)
+    const mapRef = useRef(null)
+
+    const jsonUrl = "https://gist.githubusercontent.com/lisa-mao/f194bcefafda7e15f7498694c211d78b/raw/7e7482b3eb00ad86371f129930553a90e7b32c4c/mcdonalspots.json"
+
+    useEffect(() => {
+        const targetLocation = route.params?.location
+
+        if (targetLocation && mapRef.current) {
+            setTrackUser(false)
+
+            mapRef.current.animateToRegion({
+                latitude: Number(targetLocation.latitude),
+                longitude: Number(targetLocation.longitude),
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            }, 1000)
+        }
+    }, [route.params?.location])
 
     useEffect(() => {
         (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+            let { status } = await Location.requestForegroundPermissionsAsync()
             if (status !== "granted") {
-                setErrorMsg("Permission to access location was denied");
-                return;
+                setErrorMsg("Permission to access location was denied")
+                return
             }
 
-            let currentLocation = await Location.getCurrentPositionAsync({});
-            setLocation(currentLocation);
+            let currentLocation = await Location.getCurrentPositionAsync({})
+            setLocation(currentLocation)
 
-            const { latitude, longitude } = currentLocation.coords;
-
-            mapRef.current?.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-            }, 1000);
+            if (!route.params?.location) {
+                const { latitude, longitude } = currentLocation.coords
+                mapRef.current?.animateToRegion({
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                }, 1000)
+            }
 
             try {
-                const response = await fetch(jsonUrl);
-                const data = await response.json();
-                setHotspots(data);
+                const response = await fetch(jsonUrl)
+                const data = await response.json()
+                setHotspots(data)
             } catch (error) {
-                console.error("Fout bij het ophalen van json data", error);
+                console.error("Fout bij het ophalen van json data", error)
             }
-        })();
-    }, []);
+        })()
+    }, [])
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -50,7 +68,8 @@ export default function Homescreen() {
                 ref={mapRef}
                 style={styles.map}
                 showsUserLocation={true}
-                followsUserLocation={true}
+                followsUserLocation={trackUser}
+                onPanDrag={() => setTrackUser(false)}
                 userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
                 customMapStyle={isDarkMode ? darkMapStyle : []}
                 initialRegion={{
@@ -62,14 +81,14 @@ export default function Homescreen() {
             >
                 {hotspots.map((spot, index) => (
                     <Marker
-                        key={spot.id || index.toString()}
+                        key={`${index}-${spot.name}`}
                         coordinate={{
                             latitude: Number(spot.latitude),
                             longitude: Number(spot.longitude)
                         }}
                         pinColor="red"
+                        onPress={() => setTrackUser(false)}
                     >
-
                         <Callout tooltip>
                             <View style={[styles.callout, { backgroundColor: colors.card, borderColor: colors.text }]}>
                                 <Text style={[styles.title, { color: colors.text }]}>{spot.name}</Text>
@@ -88,14 +107,14 @@ export default function Homescreen() {
                             longitude: location.coords.longitude,
                         }}
                         title="Jij bent hier"
+                        onPress={() => setTrackUser(true)}
                     />
                 )}
             </MapView>
         </View>
-    );
+    )
 }
 
-//De officiële Google Maps Dark Mode JSON style
 const darkMapStyle = [
     { "elementType": "geometry", "stylers": [{ "color": "#242f3e" }] },
     { "elementType": "labels.text.fill", "stylers": [{ "color": "#746855" }] },
@@ -115,7 +134,7 @@ const darkMapStyle = [
     { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#17263c" }] },
     { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#515c6d" }] },
     { "featureType": "water", "elementType": "labels.text.stroke", "stylers": [{ "color": "#17263c" }] }
-];
+]
 
 const styles = StyleSheet.create({
     container: {
@@ -140,4 +159,4 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 12,
     },
-});
+})
