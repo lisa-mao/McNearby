@@ -3,6 +3,7 @@ import MapView, { Callout, Marker } from 'react-native-maps'
 import { StyleSheet, View, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { ThemeContext } from '../context/ThemeContext'
+import {globalstyles} from "../styles/Globalstyles";
 
 export default function Homescreen({ route }) {
     const { colors, isDarkMode } = useContext(ThemeContext)
@@ -63,10 +64,10 @@ export default function Homescreen({ route }) {
     }, [])
 
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[globalstyles.container, { backgroundColor: colors.background }]}>
             <MapView
                 ref={mapRef}
-                style={styles.map}
+                style={globalstyles.map}
                 showsUserLocation={true}
                 followsUserLocation={trackUser}
                 onPanDrag={() => setTrackUser(false)}
@@ -90,9 +91,9 @@ export default function Homescreen({ route }) {
                         onPress={() => setTrackUser(false)}
                     >
                         <Callout tooltip>
-                            <View style={[styles.callout, { backgroundColor: colors.card, borderColor: colors.text }]}>
-                                <Text style={[styles.title, { color: colors.text }]}>{spot.name}</Text>
-                                <Text style={[styles.description, { color: colors.text, opacity: 0.7 }]}>
+                            <View style={[globalstyles.callout, { backgroundColor: colors.card, borderColor: colors.text }]}>
+                                <Text style={[globalstyles.mapTitle, { color: colors.text }]}>{spot.name}</Text>
+                                <Text style={[globalstyles.description, { color: colors.text, opacity: 0.7 }]}>
                                     {spot.address || spot.description}
                                 </Text>
                             </View>
@@ -135,28 +136,3 @@ const darkMapStyle = [
     { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#515c6d" }] },
     { "featureType": "water", "elementType": "labels.text.stroke", "stylers": [{ "color": "#17263c" }] }
 ]
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    map: {
-        width: '100%',
-        height: '100%',
-    },
-    callout: {
-        padding: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-        minWidth: 160,
-        maxWidth: 220,
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    description: {
-        fontSize: 12,
-    },
-})
