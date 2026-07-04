@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { ThemeContext } from '../context/ThemeContext'
 import { globalstyles } from "../styles/Globalstyles";
+import {MapComponent} from "../components/MapComponent";
 
 export default function Homescreen({ route }) {
     const { colors, isDarkMode, mapStyle } = useContext(ThemeContext)
@@ -65,53 +66,16 @@ export default function Homescreen({ route }) {
 
     return (
         <View style={[globalstyles.container, { backgroundColor: colors.background }]}>
-            <MapView
-                ref={mapRef}
-                style={globalstyles.map}
-                showsUserLocation={true}
-                followsUserLocation={trackUser}
-                onPanDrag={() => setTrackUser(false)}
-                userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
-                customMapStyle={mapStyle}
-                initialRegion={{
-                    latitude: 51.9225,
-                    longitude: 4.47917,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-            >
-                {hotspots.map((spot, index) => (
-                    <Marker
-                        key={`${index}-${spot.name}`}
-                        coordinate={{
-                            latitude: Number(spot.latitude),
-                            longitude: Number(spot.longitude)
-                        }}
-                        pinColor="red"
-                        onPress={() => setTrackUser(false)}
-                    >
-                        <Callout tooltip>
-                            <View style={[globalstyles.callout, { backgroundColor: colors.card, borderColor: colors.text }]}>
-                                <Text style={[globalstyles.mapTitle, { color: colors.text }]}>{spot.name}</Text>
-                                <Text style={[globalstyles.description, { color: colors.text, opacity: 0.7 }]}>
-                                    {spot.address || spot.description}
-                                </Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
-
-                {location && (
-                    <Marker
-                        coordinate={{
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                        }}
-                        title="Jij bent hier"
-                        onPress={() => setTrackUser(true)}
-                    />
-                )}
-            </MapView>
+            <MapComponent
+                mapRef={mapRef}
+                hotspots={hotspots}
+                userLocation={location}
+                colors={colors}
+                isDarkMode={isDarkMode}
+                mapStyle={mapStyle}
+                onMarkerPress={() => setTrackUser(false)}
+                onUserMarkerPress={() => setTrackUser(true)}
+            />
         </View>
     )
 }
