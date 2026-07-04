@@ -3,10 +3,10 @@ import MapView, { Callout, Marker } from 'react-native-maps'
 import { StyleSheet, View, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { ThemeContext } from '../context/ThemeContext'
-import {globalstyles} from "../styles/Globalstyles";
+import { globalstyles } from "../styles/Globalstyles";
 
 export default function Homescreen({ route }) {
-    const { colors, isDarkMode } = useContext(ThemeContext)
+    const { colors, isDarkMode, mapStyle } = useContext(ThemeContext)
 
     const [hotspots, setHotspots] = useState([])
     const [location, setLocation] = useState(null)
@@ -72,7 +72,7 @@ export default function Homescreen({ route }) {
                 followsUserLocation={trackUser}
                 onPanDrag={() => setTrackUser(false)}
                 userInterfaceStyle={isDarkMode ? 'dark' : 'light'}
-                customMapStyle={isDarkMode ? darkMapStyle : []}
+                customMapStyle={mapStyle}
                 initialRegion={{
                     latitude: 51.9225,
                     longitude: 4.47917,
@@ -116,23 +116,3 @@ export default function Homescreen({ route }) {
     )
 }
 
-const darkMapStyle = [
-    { "elementType": "geometry", "stylers": [{ "color": "#242f3e" }] },
-    { "elementType": "labels.text.fill", "stylers": [{ "color": "#746855" }] },
-    { "elementType": "labels.text.stroke", "stylers": [{ "color": "#242f3e" }] },
-    { "featureType": "administrative.locality", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] },
-    { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] },
-    { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#263c3f" }] },
-    { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#6b9a76" }] },
-    { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#38414e" }] },
-    { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "color": "#212634" }] },
-    { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#9ca5b3" }] },
-    { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#746855" }] },
-    { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#1f2835" }] },
-    { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#f3d1c4" }] },
-    { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#2f3931" }] },
-    { "featureType": "transit.station", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] },
-    { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#17263c" }] },
-    { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#515c6d" }] },
-    { "featureType": "water", "elementType": "labels.text.stroke", "stylers": [{ "color": "#17263c" }] }
-]

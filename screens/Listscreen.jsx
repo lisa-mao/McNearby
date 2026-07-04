@@ -49,39 +49,41 @@ export default function ListScreen({ navigation }) {
         const isFav = favorites.includes(item.id || item.name)
 
         return (
-            <View style={[globalstyles.card, { backgroundColor: colors.card }]}>
-                <Text style={[globalstyles.title, { color: colors.text }]}>{item.naam || item.name}</Text>
-                <Text style={[globalstyles.address, { color: colors.text }]}> {item.adres || item.address}</Text>
+            <View style={[globalstyles.card, {backgroundColor: colors.card}]}>
+                <Text style={[globalstyles.title, {color: colors.text}]}>{item.naam || item.name}</Text>
+                <Text style={[globalstyles.address, {color: colors.text}]}> {item.adres || item.address}</Text>
 
                 {item.beoordeling || item.rating ? (
-                    <Text style={[globalstyles.rating, { color: colors.text }]}>Beoordeling: {item.beoordeling || item.rating}</Text>
+                    <Text
+                        style={[globalstyles.rating, {color: colors.text}]}>Beoordeling: {item.beoordeling || item.rating}</Text>
                 ) : null}
 
-            <View style={globalstyles.buttonContainer}>
-                {item.website && (
-                    <TouchableOpacity
-                        style={[globalstyles.button, { backgroundColor: colors.primary }]}
-                        onPress={() => Linking.openURL(item.website)}
-                    >
-                        <Text style={globalstyles.buttonText}>Website</Text>
-                    </TouchableOpacity>
-                )}
+                <View style={globalstyles.buttonContainer}>
+                    {item.website && (
+                        <TouchableOpacity
+                            style={[globalstyles.button, {backgroundColor: colors.primary}]}
+                            onPress={() => Linking.openURL(item.website)}
+                        >
+                            <Text style={globalstyles.buttonText}>Website</Text>
+                        </TouchableOpacity>
+                    )}
 
-                <TouchableOpacity
-                    style={[globalstyles.button, { backgroundColor: colors.primary , flex: item.website ? 0.48 : 1 }]}
-                    onPress={() => navigation.navigate('Kaart', { location: item })}
-                >
-                    <Text style={globalstyles.buttonText}>Navigeer op kaart</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[globalstyles.button, {backgroundColor: colors.primary, flex: item.website ? 0.48 : 1}]}
+                        onPress={() => navigation.navigate('Kaart', {location: item})}
+                    >
+                        <Text style={globalstyles.buttonText}>Navigeer op kaart</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => toggleFavorite(item.id || item.name)}>
-                        <Text style={{ fontSize: 24, paddingHorizontal: 10 }}>
+                        <Text style={{fontSize: 24, paddingHorizontal: 10}}>
                             {isFav ? '💙' : '🤍'}
                         </Text>
                     </TouchableOpacity>
                 </View>
             </View>
         )
+    }
 
     return (
         <SafeAreaView style={[globalstyles.container, { backgroundColor: colors.background }]}>
@@ -111,5 +113,5 @@ export default function ListScreen({ navigation }) {
                 />
             )}
         </SafeAreaView>
-    )}}
+    )}
 
