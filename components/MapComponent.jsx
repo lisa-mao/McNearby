@@ -31,7 +31,7 @@ export const MapComponent = ({
                 <Marker
                     key={`${index}-${spot.name}`}
                     coordinate={{ latitude: Number(spot.latitude), longitude: Number(spot.longitude) }}
-                    pinColor="red"
+                    pinColor="blue"
                     onPress={onMarkerPress}
                 >
                     <Callout tooltip>
@@ -50,6 +50,7 @@ export const MapComponent = ({
                     }}
                     title="Jij bent hier"
                     onPress={onUserMarkerPress}
+                    pinColor="red"
                 />
             )}
         </MapView>
